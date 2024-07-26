@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"simple_server/helper"
 )
 
 func main() {
 	http.HandleFunc("/", handlerMainPage)
 	http.HandleFunc("/get_request", handlerGetRequest)
+	http.HandleFunc("/query_with_params", handleQueryWithParams)
 	fmt.Println("Listening on port 8080: http://localhost:8080")
 
 	err := http.ListenAndServe(":8080", nil)
@@ -19,7 +21,7 @@ func main() {
 }
 
 func handlerMainPage(w http.ResponseWriter, r *http.Request) {
-	err := OpenTemplate(w, "index")
+	err := helper.OpenTemplate(w, "index")
 
 	if err != nil {
 		log.Println(err)
@@ -49,14 +51,47 @@ func handlerGetRequest(w http.ResponseWriter, r *http.Request) {
 	// 	log.Fatal(err)
 	// }
 
-	err := OpenTemplate(w, "get_request")
+	err := helper.OpenTemplate(w, "get_request")
 
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	ret = NToBrReplacer(ret)
+	ret = helper.NToBrReplacer(ret)
+
+	_, err = w.Write([]byte(ret))
+
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func handleQueryWithParams(w http.ResponseWriter, r *http.Request) {
+	err := helper.OpenTemplate(w, "params")
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	ret := ""
+
+	ret += "URL: " + r.URL.String() + "\n\n"
+
+	if r.URL.Query().Has("action") {
+		ret += "action: " + r.URL.Query().Get("action") + "\n\n"
+	}
+
+	if r.URL.Query().Has("lang") {
+		switch r.URL.Query().Get("lang") {
+		case "en":
+			ret += "lang: " + r.URL.Query().Get("lang") + "\n\n"
+		case "ru":
+			ret += "язык: " + r.URL.Query().Get("lang") + "\n\n"
+		}
+	}
+
+	ret = helper.NToBrReplacer(ret)
 
 	_, err = w.Write([]byte(ret))
 
