@@ -19,10 +19,10 @@ func main() {
 }
 
 func handlerMainPage(w http.ResponseWriter, r *http.Request) {
-	_, err := w.Write([]byte("Hello there"))
+	err := OpenTemplate(w, "index")
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 }
 
@@ -43,13 +43,20 @@ func handlerGetRequest(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println(r.Body)
 	// fmt.Println(r.Form)
 	// fmt.Println(r.PostForm)
-	_, err := w.Write([]byte("Request Handler"))
+	// _, err := w.Write([]byte("Request Handler"))
+
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	err := OpenTemplate(w, "get_request")
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 
-	// ret = strings.Replace(ret, "\n", "<br>", -1)
+	ret = NToBrReplacer(ret)
 
 	_, err = w.Write([]byte(ret))
 
