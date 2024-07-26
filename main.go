@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"fmt"
 	"io"
 	"log"
@@ -8,6 +9,9 @@ import (
 	"simple_server/helper"
 	"time"
 )
+
+//go:embed html/*
+var static embed.FS
 
 func main() {
 	serverMux := http.NewServeMux()
@@ -33,7 +37,7 @@ func main() {
 }
 
 func handlerMainPage(w http.ResponseWriter, r *http.Request) {
-	err := helper.OpenTemplate(w, "index")
+	err := helper.OpenTemplate(w, "index", static)
 
 	if err != nil {
 		log.Println(err)
@@ -55,7 +59,7 @@ func handlerGetRequest(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r.Header)
 	ret += fmt.Sprintf("%v", r.Header)
 
-	err := helper.OpenTemplate(w, "get_request")
+	err := helper.OpenTemplate(w, "get_request", static)
 
 	if err != nil {
 		log.Println(err)
@@ -72,7 +76,7 @@ func handlerGetRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleQueryWithParams(w http.ResponseWriter, r *http.Request) {
-	err := helper.OpenTemplate(w, "params")
+	err := helper.OpenTemplate(w, "params", static)
 
 	if err != nil {
 		log.Println(err)
@@ -105,7 +109,7 @@ func handleQueryWithParams(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleFormRequest(w http.ResponseWriter, r *http.Request) {
-	err := helper.OpenTemplate(w, "form")
+	err := helper.OpenTemplate(w, "form", static)
 
 	if err != nil {
 		log.Println(err)
@@ -113,7 +117,7 @@ func handleFormRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 func handlerPostRequest(w http.ResponseWriter, r *http.Request) {
-	err := helper.OpenTemplate(w, "form_res")
+	err := helper.OpenTemplate(w, "form_res", static)
 
 	if err != nil {
 		log.Println(err)

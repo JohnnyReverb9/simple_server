@@ -1,7 +1,7 @@
 package helper
 
 import (
-	"io/ioutil"
+	"embed"
 	"log"
 	"net/http"
 	"strings"
@@ -57,8 +57,8 @@ func HandleRequest(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func OpenTemplate(w http.ResponseWriter, title string) error {
-	html, err := ioutil.ReadFile("./html/" + title + ".html")
+func OpenTemplate(w http.ResponseWriter, title string, static embed.FS) error {
+	html, err := static.ReadFile("html/" + title + ".html")
 
 	if err != nil {
 		http.Error(w, "Could not read HTML file", http.StatusInternalServerError)
