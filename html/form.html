@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Server | Form</title>
+</head>
+<body>
+<div>
+    <a href="/">Main</a>
+</div>
+<form action="/send_form" method="post">
+    <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name">
+    </div>
+    <div>
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age">
+    </div>
+    <div>
+        <label for="check_in">Check in:</label>
+        <input type="date" id="check_in" name="check_in">
+    </div>
+    <div>
+        <label for="password">password:</label>
+        <input type="password" id="password" name="password">
+    </div>
+    <div>
+        <button type="submit">Send</button>
+    </div>
+</form>
+</body>
+</html>

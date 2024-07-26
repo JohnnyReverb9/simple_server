@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"simple_server/helper"
@@ -11,6 +12,8 @@ func main() {
 	http.HandleFunc("/", handlerMainPage)
 	http.HandleFunc("/get_request", handlerGetRequest)
 	http.HandleFunc("/query_with_params", handleQueryWithParams)
+	http.HandleFunc("/post_form", handleFormRequest)
+	http.HandleFunc("/send_form", handlerPostRequest)
 	fmt.Println("Listening on port 8080: http://localhost:8080")
 
 	err := http.ListenAndServe(":8080", nil)
@@ -42,14 +45,6 @@ func handlerGetRequest(w http.ResponseWriter, r *http.Request) {
 	ret += r.UserAgent() + "\n\n"
 	fmt.Println(r.Header)
 	ret += fmt.Sprintf("%v", r.Header)
-	// fmt.Println(r.Body)
-	// fmt.Println(r.Form)
-	// fmt.Println(r.PostForm)
-	// _, err := w.Write([]byte("Request Handler"))
-
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
 
 	err := helper.OpenTemplate(w, "get_request")
 
@@ -97,5 +92,50 @@ func handleQueryWithParams(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+func handleFormRequest(w http.ResponseWriter, r *http.Request) {
+	err := helper.OpenTemplate(w, "form")
+
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func handlerPostRequest(w http.ResponseWriter, r *http.Request) {
+	err := helper.OpenTemplate(w, "form_res")
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	if r.Method == http.MethodPost {
+		bytesBody, err := io.ReadAll(r.Body)
+
+		if err != nil {
+			log.Println(err)
+
+			_, err = w.Write([]byte("400 | Bad request"))
+
+			if err != nil {
+				log.Println(err)
+			}
+
+			return
+		}
+
+		_, err = w.Write([]byte(helper.NToBrReplacer(string(bytesBody) + "\n\nOK!")))
+
+		if err != nil {
+			log.Println(err)
+		}
+		return
+	}
+
+	_, err = w.Write([]byte("POST method available only"))
+
+	if err != nil {
+		log.Println(err)
 	}
 }
