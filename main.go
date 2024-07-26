@@ -6,17 +6,26 @@ import (
 	"log"
 	"net/http"
 	"simple_server/helper"
+	"time"
 )
 
 func main() {
-	http.HandleFunc("/", handlerMainPage)
-	http.HandleFunc("/get_request", handlerGetRequest)
-	http.HandleFunc("/query_with_params", handleQueryWithParams)
-	http.HandleFunc("/post_form", handleFormRequest)
-	http.HandleFunc("/send_form", handlerPostRequest)
-	fmt.Println("Listening on port 8080: http://localhost:8080")
+	serverMux := http.NewServeMux()
+	serverMux.HandleFunc("/", handlerMainPage)
+	serverMux.HandleFunc("/get_request", handlerGetRequest)
+	serverMux.HandleFunc("/query_with_params", handleQueryWithParams)
+	serverMux.HandleFunc("/post_form", handleFormRequest)
+	serverMux.HandleFunc("/send_form", handlerPostRequest)
 
-	err := http.ListenAndServe(":8080", nil)
+	th1123 := &helper.TimeHandler{Format: time.RFC1123}
+	serverMux.Handle("/time/1", th1123)
+
+	th3339 := &helper.TimeHandler{Format: time.RFC3339}
+	serverMux.Handle("/time/2", th3339)
+
+	fmt.Println("Begin listening on port 8080: http://localhost:8080")
+
+	err := http.ListenAndServe(":8080", serverMux)
 
 	if err != nil {
 		log.Fatal(err)

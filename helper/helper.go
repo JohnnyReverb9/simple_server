@@ -5,7 +5,22 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 )
+
+type TimeHandler struct {
+	Format string
+}
+
+func (th *TimeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	tm := time.Now().Format(th.Format)
+	_, err := w.Write([]byte("The time is: " + tm))
+
+	if err != nil {
+		log.Println(err)
+		return
+	}
+}
 
 func HandleRequest(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
