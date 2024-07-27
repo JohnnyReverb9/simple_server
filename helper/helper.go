@@ -62,13 +62,13 @@ func OpenTemplate(w http.ResponseWriter, title string, static embed.FS) error {
 
 	if err != nil {
 		http.Error(w, "Could not read HTML file", http.StatusInternalServerError)
-		return err
+		panic(err)
 	}
 
 	_, err = w.Write(html)
 
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	return nil
